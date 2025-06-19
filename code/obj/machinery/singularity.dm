@@ -1588,6 +1588,28 @@ TYPEINFO(/obj/machinery/power/collector_array)
 			if(M == user)	continue
 			M.show_message(SPAN_ALERT("The [src.name] has been hit with the [W.name] by [user.name]!"))
 
+/obj/machinery/power/collector_array/MouseDrop_T(obj/item/W, mob/user)
+	if (!isliving(user) || ismobcritter(use))
+		boutput(user, SPAN_ALERT("You can't use this!"))
+		return
+	if (!istype(W, /obj/item/tank/plasma))
+		boutput(user, SPAN_ALERT("You can't put that in the collector array!"))
+		return
+	if (BOUNDS_DIST(user, src) > 0)
+		boutput(user, SPAN_ALERT("You need to be closer to the collector array."))
+		return
+	if (BOUNDS_DIST(user, W) > 0)
+		boutput(user, SPAN_ALERT("The plasma tank needs to be near you to put it in the collector array."))
+		return
+	if(src.P)
+		boutput(user, SPAN_ALERT("There appears to already be a plasma tank loaded!"))
+		return
+	src.P = W
+	W.set_loc(src)
+	user.u_equip(W)
+	CU?.updatecons()
+	UpdateIcon()
+
 ////////////////////////// Collector array controller ////////////////////////////
 
 /obj/item/electronics/frame/collector_control
